@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixatar Generator</title>
+    <style>
+        body {
+            font-family: monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #1a1a2e;
+            color: #fff;
+            padding-top: 50px;
+        }
+
+        #avatar {
+            display: grid;
+            grid-template-columns: repeat(8, 40px);
+            grid-template-rows: repeat(8, 40px);
+            gap: 2px;
+            background-color: #16213e;
+            border: 4px solid #e94560;
+            margin-bottom: 25px;
+        }
+
+        .pixel {
+            width: 40px;
+            height: 40px;
+        }
+
+        button {
+            padding: 12px 24px;
+            font-size: 16px;
+            font-family: monospace;
+            font-weight: bold;
+            cursor: pointer;
+            background-color: #e94560;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #ff3366;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>👾 Pixatar Generator</h1>
+
+    <div id="avatar"></div>
+    <button onclick="generateAvatar()">Generate New Avatar</button>
+
+    <script>
+        const avatar = document.getElementById('avatar');
+
+        function generateAvatar() {
+            avatar.innerHTML = ''; // Clear previous grid
+
+            // Generate a random hex color for the avatar
+            const primaryColor = '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
+            const emptyColor = '#eeeeee';
+
+            for (let row = 0; row < 8; row++) {
+                // Generate half a row (4 pixels) to create symmetry
+                let halfRow = [];
+                for (let col = 0; col < 4; col++) {
+                    halfRow.push(Math.random() > 0.5 ? primaryColor : emptyColor);
+                }
+
+                // Mirror the half row to make a symmetrical 8-pixel row
+                let fullRow = [...halfRow, ...[...halfRow].reverse()];
+
+                fullRow.forEach(color => {
+                    const pixel = document.createElement('div');
+                    pixel.classList.add('pixel');
+                    pixel.style.backgroundColor = color;
+                    avatar.appendChild(pixel);
+                });
+            }
+        }
+
+        // Generate the first avatar when the page loads
+        generateAvatar();
+    </script>
+</body>
+
+</html>
