@@ -5,9 +5,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pixatar Generator</title>
+
+    <!-- Import a retro pixel font from Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <!-- Import html2canvas library for the download feature -->
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
     <style>
         body {
-            font-family: monospace;
+            font-family: 'Press Start 2P', monospace;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -24,6 +30,7 @@
             background-color: #16213e;
             border: 4px solid #e94560;
             margin-bottom: 25px;
+            box-shadow: 0 0 20px rgba(233, 69, 96, 0.5);
         }
 
         .pixel {
@@ -31,20 +38,30 @@
             height: 40px;
         }
 
+        .button-group {
+            display: flex;
+            gap: 15px;
+        }
+
         button {
             padding: 12px 24px;
-            font-size: 16px;
-            font-family: monospace;
-            font-weight: bold;
+            font-size: 12px;
+            font-family: 'Press Start 2P', monospace;
             cursor: pointer;
             background-color: #e94560;
             color: white;
             border: none;
             border-radius: 5px;
+            transition: transform 0.1s, box-shadow 0.1s;
         }
 
         button:hover {
             background-color: #ff3366;
+            box-shadow: 0 0 10px #ff3366;
+        }
+
+        button:active {
+            transform: scale(0.95);
         }
     </style>
 </head>
@@ -53,26 +70,30 @@
     <h1>👾 Pixatar Generator</h1>
 
     <div id="avatar"></div>
-    <button onclick="generateAvatar()">Generate New Avatar</button>
+
+    <div class="button-group">
+        <button onclick="generateAvatar()">Generate</button>
+        <button onclick="downloadAvatar()">Download PNG</button>
+    </div>
 
     <script>
         const avatar = document.getElementById('avatar');
 
         function generateAvatar() {
-            avatar.innerHTML = ''; // Clear previous grid
+            avatar.innerHTML = ''; // Clear previous grids
 
-            // Generate a random hex color for the avatar
+            // Generates a random hex color for the avatar
             const primaryColor = '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
             const emptyColor = '#eeeeee';
 
             for (let row = 0; row < 8; row++) {
-                // Generate half a row (4 pixels) to create symmetry
+                // Generates half a row (4 pixels) to create symmetry
                 let halfRow = [];
                 for (let col = 0; col < 4; col++) {
                     halfRow.push(Math.random() > 0.5 ? primaryColor : emptyColor);
                 }
 
-                // Mirror the half row to make a symmetrical 8-pixel row
+                // Mirrored half rows create a symmetrical 8-pixel row
                 let fullRow = [...halfRow, ...[...halfRow].reverse()];
 
                 fullRow.forEach(color => {
@@ -84,7 +105,17 @@
             }
         }
 
-        // Generate the first avatar when the page loads
+        // Function to capture the avatar grid and trigger a PNG download
+        function downloadAvatar() {
+            html2canvas(document.querySelector("#avatar")).then(canvas => {
+                let link = document.createElement('a');
+                link.download = 'my-pixatar.png';
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+            });
+        }
+
+        // Generates the first avatar when the page loads
         generateAvatar();
     </script>
 </body>
